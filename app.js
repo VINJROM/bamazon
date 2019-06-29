@@ -11,6 +11,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     console.log("Connected as id: " + connection.threadId);
+    start();
 });
 
 var start = function() {
@@ -30,15 +31,15 @@ var start = function() {
 
 var postAuction = function() {
     inquirer.prompt([{
-        name: "item",
+        name: "item_name",
         type: "input",
-        message: "What item would you like to sell?"
+        message: "\nWhat item would you like to post?"
     }, {
         name: "category",
         type: "input",
         message: "What category is your item?"
     }, {
-        name: "startingBid",
+        name: "starting_bid",
         type: "input",
         message: "What is the starting bid?",
         validate: function(value) {
@@ -50,14 +51,64 @@ var postAuction = function() {
         }
     }]).then(function(answer) {
         connection.query("INSERT INTO auctions SET ?", {
-                itemname: answer.item,
+                item_name: answer.item_name,
                 category: answer.category,
-                startingbid: answer.startingBid,
-                highestbid: answer.startingBid
+                starting_bid: answer.starting_bid,
+                highest_bid: answer.highest_bid
             },
             function(err, res) {
-                console.log("Your auction was created successfully.");
+                console.log("\nYour auction was created successfully!\n");
                 start();
             })
+    })
+}
+
+var bidAuction = function() {
+    connection.query("SELECT * FROM auctions", function(err, res) {
+        console.log(res);
+        inquirer.prompt({
+            name: "choice",
+            type: "rawlist",
+            choices: function(value) {
+                var choiceArray = [];
+                for (var i = 0; i < res.length; i++) {
+                    choiceArray.push(res[i].item_name);
+                }
+                return choiceArray;
+            },
+            message: "What item would you like to bid on?"
+        }).then(function(answer) {
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].item_name == answer.choice) {
+                    var chosenItem = res[i];
+                    inquirer.prompt({
+                        name: "bid",
+                        type: "input",
+                        message: "How much would you like to bid?",
+                        validate: function(value) {
+                            if (isNaN(value) == false) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    }).then(function(answer) {
+                        if (chosenItem.highest_bid < parseInt(answer.bid)) {
+                            connection.query("UPDATE auctions SET ? WHERE ?", [{
+                                highest_bid: answer.bid
+                            }, {
+                                id: chosenItem.id
+                            }], function(err, res) {
+                                console.log("Bid successfully placed!\n");
+                                start();
+                            });
+                        } else {
+                            console.log("\nYour bid was too low. Try again...");
+                            start();
+                        }
+                    })
+                }
+            }
+        })
     })
 }
