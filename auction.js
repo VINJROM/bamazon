@@ -1,12 +1,13 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
 
+// MySQL database connection
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
     password: "",
-    database: "bamazon_db"
+    database: "auction_db"
 })
 
 connection.connect(function(err) {
@@ -14,6 +15,7 @@ connection.connect(function(err) {
     start();
 });
 
+// inquirer starting prompt
 var start = function() {
     inquirer.prompt({
         name: "postOrBid",
@@ -29,6 +31,7 @@ var start = function() {
     })
 }
 
+// POST function
 var postAuction = function() {
     inquirer.prompt([{
         name: "item_name",
@@ -43,12 +46,13 @@ var postAuction = function() {
         type: "input",
         message: "What is the starting bid?",
         validate: function(value) {
-            if (isNaN(value) == false) {
-                return true;
-            } else {
-                return false;
+                if (isNaN(value) == false) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-        }
+            // pushes input to database
     }]).then(function(answer) {
         connection.query("INSERT INTO auctions SET ?", {
                 item_name: answer.item_name,
@@ -63,12 +67,14 @@ var postAuction = function() {
     })
 }
 
+// BID function
 var bidAuction = function() {
     connection.query("SELECT * FROM auctions", function(err, res) {
         console.log(res);
         inquirer.prompt({
             name: "choice",
             type: "rawlist",
+            // forloop displays posted items as array-objects
             choices: function(value) {
                 var choiceArray = [];
                 for (var i = 0; i < res.length; i++) {
@@ -77,6 +83,7 @@ var bidAuction = function() {
                 return choiceArray;
             },
             message: "What item would you like to bid on?"
+                // calls posted items,
         }).then(function(answer) {
             for (var i = 0; i < res.length; i++) {
                 if (res[i].item_name == answer.choice) {
@@ -86,12 +93,13 @@ var bidAuction = function() {
                         type: "input",
                         message: "How much would you like to bid?",
                         validate: function(value) {
-                            if (isNaN(value) == false) {
-                                return true;
-                            } else {
-                                return false;
+                                if (isNaN(value) == false) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
                             }
-                        }
+                            // checks if answer is lower than starting bid
                     }).then(function(answer) {
                         if (chosenItem.highest_bid < parseInt(answer.bid)) {
                             connection.query("UPDATE auctions SET ? WHERE ?", [{

@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS bamazon_db;
-CREATE DATABASE bamazon_db;
+DROP DATABASE IF EXISTS auction_db;
+CREATE DATABASE auction_db;
 
-USE bamazon_db;
+USE auction_db;
 
 CREATE TABLE auctions(
   id INT NOT NULL AUTO_INCREMENT,
