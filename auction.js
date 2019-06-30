@@ -77,9 +77,7 @@ var bidAuction = function() {
             // forloop displays posted items as array-objects
             choices: function(value) {
                 var choiceArray = [];
-                for (var i = 0; i < res.length; i++) {
-                    choiceArray.push(res[i].item_name);
-                }
+                for (var i = 0; i < res.length; i++) { choiceArray.push(res[i].item_name); }
                 return choiceArray;
             },
             message: "What item would you like to bid on?"
