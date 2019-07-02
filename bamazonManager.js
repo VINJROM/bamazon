@@ -29,8 +29,8 @@ var start = function() {
             viewLowInventory();
         } else if (answer.startOptions == "Re-Order Inventory") {
             reOrderInventory();
-        } else if (answer.startOptions == "Add New Products") {
-            addNewProducts();
+        } else if (answer.startOptions == "Add New Product") {
+            addNewProduct();
         }
     })
 }
@@ -50,13 +50,12 @@ var viewLowInventory = function() {
         type: "input",
         message: "What is the quantity threshold?",
         validate: function(value) {
-                if (isNaN(value) == false) {
-                    return true;
-                } else {
-                    return false;
-                }
+            if (isNaN(value) == false) {
+                return true;
+            } else {
+                return false;
             }
-            // pushes input to database
+        }
     }]).then(function(answer) {
         connection.query("SELECT * FROM products WHERE stock_quantity < " + value, function(err, res) {
             console.log("View Low Inventory\n")
@@ -99,14 +98,11 @@ var reOrderInventory = function() {
                                     return false;
                                 }
                             }
-                            // checks if answer is lower than product quantity
+                            // user input "qty" not affecting quantity
                     }).then(function(answer) {
-                        parseInt(answer.qty) {
-
-                            connection.query("UPDATE products SET stock_quantity = stock_quantity + " + answer.qty + " WHERE id = " + chosenItem.id);
-                            console.log("Item successfully ordered!");
-                            start();
-                        }
+                        connection.query("UPDATE products SET stock_quantity = stock_quantity + " + answer.qty + " WHERE id = " + chosenItem.id);
+                        console.log("Item successfully ordered!");
+                        start();
                     })
                 }
             }
@@ -114,9 +110,7 @@ var reOrderInventory = function() {
     })
 }
 
-
-
-var addNewProducts = function() {
+var addNewProduct = function() {
     inquirer.prompt([{
         name: "item_name",
         type: "input",
@@ -144,8 +138,8 @@ var addNewProducts = function() {
                 customer_price: answer.customer_price,
                 stock_quantity: "0"
             },
-            function(err, res) {
-                console.log("\nYour product was added!\n");
+            function() {
+                console.log("\nProduct added!\n");
                 start();
             })
     })
