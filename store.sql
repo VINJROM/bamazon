@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS auction_db;
-CREATE DATABASE auction_db;
+DROP DATABASE IF EXISTS bamazon_db;
+CREATE DATABASE bamazon_db;
 
 USE auction_db;
 
