@@ -67,13 +67,62 @@ var viewLowInventory = function() {
     })
 }
 
+var reOrderInventory = function() {
+    connection.query("SELECT * FROM products", function(err, res) {
+        console.log(res);
+        inquirer.prompt({
+            name: "inventoryChoices",
+            type: "rawlist",
+            // forloop displays products as array-objects
+            choices: function(value) {
+                var choiceArray = [];
+                for (var i = 0; i < res.length; i++) {
+                    choiceArray.push(res[i].item_name);
+                }
+                return choiceArray;
+            },
+            message: "What would you like to re-order?"
+                // calls product items,
+        }).then(function(answer) {
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].item_name == answer.choice) {
+                    var chosenItem = res[i];
+                    inquirer.prompt({
+                        name: "qty",
+                        type: "input",
+                        message: "How many would you like to order?",
+                        // verifies numerical quantity
+                        validate: function(value) {
+                                if (isNaN(value) == false) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                            // checks if answer is lower than product quantity
+                    }).then(function(answer) {
+                        parseInt(answer.qty) {
+
+                            connection.query("UPDATE products SET stock_quantity = stock_quantity + " + answer.qty + " WHERE id = " + chosenItem.id);
+                            console.log("Item successfully ordered!");
+                            start();
+                        }
+                    })
+                }
+            }
+        })
+    })
+}
+
+
+
 var addNewProducts = function() {
     inquirer.prompt([{
         name: "item_name",
         type: "input",
         message: "\nWhat item would you like to add?"
     }, {
-        name: "department",
+        name: "department_name",
         type: "input",
         message: "What department is your item?"
     }, {
@@ -91,7 +140,7 @@ var addNewProducts = function() {
     }]).then(function(answer) {
         connection.query("INSERT INTO products SET ?", {
                 item_name: answer.item_name,
-                department: answer.department_name,
+                department_name: answer.department_name,
                 customer_price: answer.customer_price,
                 stock_quantity: "0"
             },
