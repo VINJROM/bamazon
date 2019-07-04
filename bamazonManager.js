@@ -21,34 +21,36 @@ var start = function() {
         name: "startOptions",
         type: "rawlist",
         message: "What would you like to do?",
-        choices: ["View Inventory", "View Low Inventory", "Re-Order Inventory", "Add New Product"],
+        choices: ["View Inventory", "View Low Inventory", "Add Inventory", "Create New Product"],
     }).then(function(answer) {
         if (answer.startOptions == "View Inventory") {
             viewInventory();
         } else if (answer.startOptions == "View Low Inventory") {
             viewLowInventory();
-        } else if (answer.startOptions == "Re-Order Inventory") {
+        } else if (answer.startOptions == "Add Inventory") {
             reOrderInventory();
-        } else if (answer.startOptions == "Add New Product") {
+        } else if (answer.startOptions == "Create New Product") {
             addNewProduct();
         }
     })
 }
 
+// view inventory function
 var viewInventory = function() {
     connection.query("SELECT * FROM products", function(err, res) {
-        console.log("View Inventory\n")
+        console.log("\nInventory:\n")
         console.log(res);
         console.log("\n")
         start();
     })
 }
 
+// view low-inventory function
 var viewLowInventory = function() {
     inquirer.prompt([{
-        name: "user_number",
+        name: "limit",
         type: "input",
-        message: "What is the quantity threshold?",
+        message: "What is the quantity limit?",
         validate: function(value) {
             if (isNaN(value) == false) {
                 return true;
@@ -57,8 +59,9 @@ var viewLowInventory = function() {
             }
         }
     }]).then(function(answer) {
-        connection.query("SELECT * FROM products WHERE stock_quantity < " + value, function(err, res) {
-            console.log("View Low Inventory\n")
+        parseInt(answer.limit);
+        connection.query("SELECT * FROM products WHERE stock_quantity < " + answer.limit, function(err, res) {
+            console.log("\nAll inventory below " + answer.limit + ":\n")
             console.log(res);
             console.log("\n")
             start();
@@ -66,11 +69,12 @@ var viewLowInventory = function() {
     })
 }
 
+// re-order inventory function
 var reOrderInventory = function() {
     connection.query("SELECT * FROM products", function(err, res) {
         console.log(res);
         inquirer.prompt({
-            name: "inventoryChoices",
+            name: "choice",
             type: "rawlist",
             // forloop displays products as array-objects
             choices: function(value) {
@@ -80,7 +84,7 @@ var reOrderInventory = function() {
                 }
                 return choiceArray;
             },
-            message: "What would you like to re-order?"
+            message: "What would you like to add?"
                 // calls product items,
         }).then(function(answer) {
             for (var i = 0; i < res.length; i++) {
@@ -89,7 +93,7 @@ var reOrderInventory = function() {
                     inquirer.prompt({
                         name: "qty",
                         type: "input",
-                        message: "How many would you like to order?",
+                        message: "How many would you like to add?",
                         // verifies numerical quantity
                         validate: function(value) {
                                 if (isNaN(value) == false) {
@@ -98,10 +102,12 @@ var reOrderInventory = function() {
                                     return false;
                                 }
                             }
-                            // user input "qty" not affecting quantity
+                            // Updates targeted quantity with user number
                     }).then(function(answer) {
+                        parseInt(answer.qty);
+                        // console.log(answer.qty);
                         connection.query("UPDATE products SET stock_quantity = stock_quantity + " + answer.qty + " WHERE id = " + chosenItem.id);
-                        console.log("Item successfully ordered!");
+                        console.log("\n" + answer.qty + " of " + chosenItem.item_name + " has successfully been added!" + "\n");
                         start();
                     })
                 }
@@ -110,11 +116,12 @@ var reOrderInventory = function() {
     })
 }
 
+// add new product function
 var addNewProduct = function() {
     inquirer.prompt([{
         name: "item_name",
         type: "input",
-        message: "\nWhat item would you like to add?"
+        message: "What item would you like to create?"
     }, {
         name: "department_name",
         type: "input",
@@ -139,7 +146,7 @@ var addNewProduct = function() {
                 stock_quantity: "0"
             },
             function() {
-                console.log("\nProduct added!\n");
+                console.log("\n" + answer.item_name + " created!\n");
                 start();
             })
     })
