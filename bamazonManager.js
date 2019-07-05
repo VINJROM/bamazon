@@ -15,7 +15,7 @@ connection.connect(function(err) {
     start();
 });
 
-// displays choices
+// displays starting choices
 var start = function() {
     inquirer.prompt({
         name: "startOptions",
@@ -35,7 +35,7 @@ var start = function() {
     })
 }
 
-// view inventory function
+// view inventory function displays products
 var viewInventory = function() {
     connection.query("SELECT * FROM products", function(err, res) {
         console.log("\nInventory:\n")
@@ -45,19 +45,20 @@ var viewInventory = function() {
     })
 }
 
-// view low-inventory function
+// view low-inventory function; user sets limit
 var viewLowInventory = function() {
     inquirer.prompt([{
         name: "limit",
         type: "input",
         message: "What is the quantity limit?",
         validate: function(value) {
-            if (isNaN(value) == false) {
-                return true;
-            } else {
-                return false;
+                if (isNaN(value) == false) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-        }
+            // results below the limit are displayed
     }]).then(function(answer) {
         parseInt(answer.limit);
         connection.query("SELECT * FROM products WHERE stock_quantity < " + answer.limit, function(err, res) {
@@ -94,7 +95,7 @@ var reOrderInventory = function() {
                         name: "qty",
                         type: "input",
                         message: "How many would you like to add?",
-                        // verifies numerical quantity
+                        // verifies numberical value
                         validate: function(value) {
                                 if (isNaN(value) == false) {
                                     return true;
@@ -102,10 +103,9 @@ var reOrderInventory = function() {
                                     return false;
                                 }
                             }
-                            // Updates targeted quantity with user number
+                            // Updates stock_quantity with user input
                     }).then(function(answer) {
                         parseInt(answer.qty);
-                        // console.log(answer.qty);
                         connection.query("UPDATE products SET stock_quantity = stock_quantity + " + answer.qty + " WHERE id = " + chosenItem.id);
                         console.log("\n" + answer.qty + " of " + chosenItem.item_name + " has successfully been added!" + "\n");
                         start();
