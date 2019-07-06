@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
     user: "root",
     password: "",
     database: "bamazon_db"
-})
+});
 
 connection.connect(function(err) {
     console.log("Connected as id: " + connection.threadId);

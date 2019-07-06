@@ -9,7 +9,6 @@ var connection = mysql.createConnection({
     password: "",
     database: "bamazon_db"
 })
-
 connection.connect(function(err) {
     console.log("Connected as id: " + connection.threadId);
     start();
@@ -21,7 +20,7 @@ var start = function() {
         name: "startOptions",
         type: "rawlist",
         message: "What would you like to do?",
-        choices: ["View Inventory", "View Low Inventory", "Add Inventory", "Create New Product"],
+        choices: ["View Inventory", "View Low Inventory", "Add Inventory", "Create New Item", "Delete Item"],
     }).then(function(answer) {
         if (answer.startOptions == "View Inventory") {
             viewInventory();
@@ -29,8 +28,10 @@ var start = function() {
             viewLowInventory();
         } else if (answer.startOptions == "Add Inventory") {
             reOrderInventory();
-        } else if (answer.startOptions == "Create New Product") {
+        } else if (answer.startOptions == "Create New Item") {
             addNewProduct();
+        } else if (answer.startOptions == "Delete Item") {
+            deleteItem();
         }
     })
 }
@@ -149,5 +150,29 @@ var addNewProduct = function() {
                 console.log("\n" + answer.item_name + " created!\n");
                 start();
             })
+    })
+}
+
+// delete item funciton
+var deleteItem = function() {
+    connection.query("SELECT * FROM products", function(err, res) {
+        console.log(res);
+        inquirer.prompt({
+            name: "choice",
+            type: "rawlist",
+            // forloop displays products as array-objects
+            choices: function(value) {
+                var choiceArray = [];
+                for (var i = 0; i < res.length; i++) {
+                    choiceArray.push(res[i].item_name);
+                }
+                return choiceArray;
+            },
+            message: "What item would you like to delete?"
+                // calls product items,
+        }).then(function(answer) {
+            connection.query("DELETE FROM products WHERE item_name= '" + answer.choice + "'\n")
+            console.log("\n" + answer.choice + " has been deleted!\n")
+        })
     })
 }
