@@ -171,8 +171,9 @@ var deleteItem = function() {
             message: "What item would you like to delete?"
                 // calls product items,
         }).then(function(answer) {
-            connection.query("DELETE FROM products WHERE item_name= '" + answer.choice + "'\n")
-            console.log("\n" + answer.choice + " has been deleted!\n")
+            connection.query("DELETE FROM products WHERE item_name= '" + answer.choice + "'\n");
+            console.log("\n" + answer.choice + " has been deleted!\n");
+            start();
         })
     })
 }

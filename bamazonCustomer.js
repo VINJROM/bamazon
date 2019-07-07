@@ -46,7 +46,7 @@ var buyFunction = function() {
                 }
                 return choiceArray;
             },
-            message: "What would you like to buy?"
+            message: "\nWhat would you like to buy?\n"
                 // calls product items,
         }).then(function(answer) {
             for (var i = 0; i < res.length; i++) {
@@ -55,7 +55,7 @@ var buyFunction = function() {
                     inquirer.prompt({
                         name: "qty",
                         type: "input",
-                        message: "How many would you like to buy?",
+                        message: "\nHow many would you like to buy?\n",
                         // verifies numerical quantity
                         validate: function(value) {
                                 if (isNaN(value) == false) {
@@ -66,15 +66,15 @@ var buyFunction = function() {
                             }
                             // checks if answer is lower than product quantity
                     }).then(function(answer) {
-                        if (chosenItem.stock_quantity > parseInt(answer.qty)) {
+                        if (chosenItem.stock_quantity >= parseInt(answer.qty)) {
 
                             // if answer is less than stock quantity, reduce stock quantity
                             connection.query("UPDATE products SET stock_quantity = stock_quantity - " + answer.qty + " WHERE id = " + chosenItem.id);
-                            console.log("Item successfully ordered!");
+                            console.log("\nItem successfully ordered!\n");
                             start();
                             // console.log("New " + chosenItem.item_name + " qty = " + chosenItem.stock_quantity)
                         } else {
-                            console.log("Sorry, we are out of stock for that item.");
+                            console.log("\nSorry, insufficient quantity.\n");
                             start();
                         }
                     })
