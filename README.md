@@ -6,6 +6,7 @@ Using **bamazonCustomer.js** via Node, users are prompted to buy inventory in wh
 **bamazonManager.js** is the flipside of bamazonCustomer.js in which users can view inventory, check low-quantities, add to inventory, and remove products from inventory all while modifying the store's database in real-time.
 
 ![ScreenShot](https://raw.github.com/VINJROM/bamazon/master/screenshots/customer_01.png)
+![bamazonCustomer Example 0](/screenshots/customer_01.png)
 
 
 # Motivation #
