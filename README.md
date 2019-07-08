@@ -5,6 +5,9 @@ Bamazon is a inventory-buying and managing application comprised of two javascri
 Using **bamazonCustomer.js** via Node, users are prompted to buy inventory where their selected quantity will deplete stock from the store-database.
 **bamazonManager.js** is the flipside of bamazonCustomer.js in which users can view inventory, check low-quantities, add to inventory, and remove products from inventory all while modifying the store's database in real-time.
 
+![bamazon-](images/customer_01.png.PNG)
+
+
 # Motivation #
 This application is part of the University of Minnesota's Web Application Development program. This particular assignment encouraged students to stretch and apply their learned MySQL abilities.
 
