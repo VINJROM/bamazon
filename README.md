@@ -1,11 +1,32 @@
-### Bamazon.js ###
+# Bamazon.js #
+
+Welcome to Bamazon! This is an Amazon-like storefront built with MySQL and Node.js. 
+
+Within the customer portal, you can view the inventory, choose an item you'd like to purchase
+along with the quantity, and voila! Transaction complete! However, if we do not have enough 
+of the selected item in stock deeming us unable to fulfill your purchase, the transaction 
+will not go through.
+
+Within the manager portal, you can view all inventory in the store, view all low
+inventory (less than 5 items in stock), choose to up the inventory back to the correct amount
+needed, and even add new items to your inventory! 
+
+Happy shopping!
+
 
 # Description #
-Bamazon is a inventory-buying and managing application comprised of two javascript-files; bamazonCustomer.js and bamazonManager.js.
-Using **bamazonCustomer.js** via Node, users are prompted to buy inventory where their selected quantity will deplete stock from the MySQL store-database.
+
+Welcome to Bamazon! This is an Amazon-like storefront built with MySQL and Node.js.
+
+Within the customer portal,**bamazonCustomer.js**, you can view the inventory, choose an item you'd like to purchase
+along with the quantity, and voila! Transaction complete! However, if we do not have enough 
+of the selected item in stock deeming us unable to fulfill your purchase, the transaction 
+will not go through.
 ![bamazon-](screenshots/customer_01.png)
 
-**bamazonManager.js** is the flipside of bamazonCustomer.js in which users can view inventory, check low-quantities, add to inventory, and remove products from inventory all while modifying the store's database in real-time.
+Within the manager portal,**bamazonManager.js**, you can view all inventory in the store, view all low
+inventory (less than 5 items in stock), choose to up the inventory back to the correct amount
+needed, and even add new items to your inventory! 
 ![bamazon-](screenshots/manager_01.png)
 
 _Selecting *view low-inventory* lets users set a limit that displays all products under set-limit._
@@ -14,14 +35,24 @@ _Selecting *view low-inventory* lets users set a limit that displays all product
 _Selecting the *add inventory* lets users add their desired product and place it into a department while updating the corresponding MySQL database in real-time_
 ![bamazon-](screenshots/manager_02.png)
 
+# Getting Started #
+To get started on this project, follow the installations instructions below.
+Installations
 
-# Motivation #
-This application is part of the University of Minnesota's Web Application Development program. This particular assignment encouraged students to stretch and apply their learned MySQL abilities.
+###### Step 1
+> npm install
 
-# Result #
-The result is a mock-storefront in which users can easily order, view, and manage a customizable database.
+The above command will install all the dependencies you need
 
-# Improvements #
-I would like to add bamazonSupervisor.js where users can view top-grossing products and overhead costs.
+
+###### Step 2
+> Enter node bamazonCustomer in CLI to kickstart app
+
+
+# Built With
+* MySQL
+* Node.JS
+* JavaScript
+
 
  
